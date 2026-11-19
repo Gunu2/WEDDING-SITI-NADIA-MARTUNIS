@@ -7,9 +7,10 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Jost:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
-/* Layout: one scrolling invitation, full-bleed navy bands, centered 520px column, jasmine flowers at the corners.
+/* Layout: one scrolling invitation in full-bleed navy bands with a centered 520px column and jasmine flowers at the corners.
+   Motion: cover intro, scroll reveals, flower parallax, drifting gold dust, and an automatic cinematic tour after "Buka Undangan".
    Single dark look by choice, to match the printed front card. */
 :root{
   --navy:#272a3f;
@@ -19,14 +20,16 @@
   --ivory:#f3ecda;
   --gold:#f2c230;
   --line:rgba(232,223,200,.6);
+  --ease:cubic-bezier(.2,.7,.2,1);
   --display:'Playfair Display',Georgia,'Times New Roman',serif;
+  --arab:'Amiri','Scheherazade New','Noto Naskh Arabic','Traditional Arabic',serif;
   --body:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--navy);color:var(--ivory);font-family:var(--body);font-size:18px;line-height:1.6;-webkit-text-size-adjust:100%}
 h1,h2,h3,p{margin:0}
-.sec{position:relative;overflow:hidden;padding-block:80px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));background:var(--navy)}
+.sec{position:relative;overflow:hidden;padding-block:84px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));background:var(--navy)}
 .sec.alt{background:var(--navy-deep)}
 .in{position:relative;z-index:2;max-width:520px;margin-inline:auto;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;min-width:0}
 .eyebrow{font-size:14px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:var(--cream);padding-left:.32em}
@@ -34,29 +37,50 @@ h1,h2,h3,p{margin:0}
 .h2{font-size:clamp(38px,10vw,54px)}
 .lead{max-width:440px;text-wrap:pretty}
 .rule{display:flex;align-items:center;gap:16px;width:100%;max-width:260px;color:var(--ivory)}
-.rule::before,.rule::after{content:"";flex:1;height:1.5px;background:var(--line)}
+.rule::before,.rule::after{content:"";flex:1;height:1.5px;background:var(--line);transition:transform 1.4s var(--ease) .2s}
+.rule::before{transform-origin:100% 50%}
+.rule::after{transform-origin:0 50%}
+.rule.rv-pre::before,.rule.rv-pre::after{transform:scaleX(0)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 28px;border-radius:999px;border:1.5px solid var(--cream);background:var(--cream);color:var(--navy);font:600 17px/1.2 var(--body);letter-spacing:.02em;cursor:pointer;text-decoration:none}
 .btn:hover{background:var(--ivory);border-color:var(--ivory)}
 .btn.ghost{background:transparent;color:var(--ivory)}
-.btn.ghost:hover{background:rgba(243,236,218,.1);border-color:var(--ivory)}
 .btn:focus-visible,.fab:focus-visible{outline:3px solid var(--ivory);outline-offset:3px}
 .btn svg,.fab svg{flex:none}
 
 /* flowers */
-.fl{position:absolute;z-index:3;pointer-events:none;user-select:none;height:auto}
+.fl{position:absolute;z-index:3;pointer-events:none;user-select:none;height:auto;will-change:translate}
 .sway{animation:sway 9s ease-in-out infinite alternate;transform-origin:var(--o,50% 100%)}
 @keyframes sway{from{rotate:-1.6deg}to{rotate:1.6deg}}
-@media (prefers-reduced-motion:reduce){.sway{animation:none}}
+.fl-in{animation:flIn 2.6s var(--ease) both,sway 9s ease-in-out 2.6s infinite alternate}
+@keyframes flIn{from{translate:var(--fx,0) var(--fy,0);opacity:0}to{translate:0 0;opacity:1}}
+
+/* scroll reveal (classes are added by script only for content below the fold) */
+.rv{transition:opacity 1.2s var(--ease) var(--d,0s),transform 1.2s var(--ease) var(--d,0s)}
+.rv-pre{opacity:0;transform:translateY(34px)}
 
 /* cover */
 .cover{min-height:100svh;display:flex;align-items:center;justify-content:center;padding-block:56px}
-.arch{position:relative;z-index:2;width:min(100%,540px);margin-inline:auto;background:var(--panel);border:1.5px solid var(--line);border-radius:999px 999px 0 0;padding:clamp(120px,36vw,190px) 28px 52px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.arch{position:relative;z-index:2;width:min(100%,540px);margin-inline:auto;background:var(--panel);border:1.5px solid var(--line);border-radius:999px 999px 0 0;padding:clamp(120px,36vw,190px) 28px 52px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;animation:rise 1.8s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(70px)}to{opacity:1;transform:none}}
+.arch>*{animation:fadeUp 1.2s var(--ease) both;animation-delay:calc(.7s + var(--i,0) * .15s)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 .arch .names{font-size:clamp(34px,9.4vw,50px)}
 .amp{font-size:20px;color:var(--ivory);display:flex;align-items:center;gap:14px;width:100%;max-width:240px}
 .amp::before,.amp::after{content:"";flex:1;height:1.5px;background:var(--line)}
 .guest{display:flex;flex-direction:column;gap:2px;margin-top:6px}
 .guest small{font-size:15px;color:var(--cream);letter-spacing:.05em}
 .guest strong{font-size:24px;font-weight:600;overflow-wrap:anywhere}
+.cue{animation:fadeUp 1.2s var(--ease) 2.2s both,nudge 2.4s ease-in-out 3.6s infinite}
+@keyframes nudge{50%{transform:translateY(5px)}}
+
+/* arabic */
+.ar{font-family:var(--arab);direction:rtl;font-weight:400;line-height:2;color:var(--ivory);text-wrap:balance;max-width:100%}
+.ar.xl{font-size:clamp(28px,7.6vw,38px)}
+.ar.md{font-size:clamp(24px,6.4vw,30px);color:var(--cream)}
+.latin{font-style:italic;color:var(--cream);font-size:16px;line-height:1.6;max-width:430px}
+.trans{max-width:440px;text-wrap:pretty}
+.ref{font-size:13px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);padding-left:.24em}
+.verse{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 
 /* couple */
 .person .script{font-size:clamp(36px,9.6vw,50px)}
@@ -90,19 +114,30 @@ h1,h2,h3,p{margin:0}
 .sign{display:flex;flex-direction:column;gap:2px;font-size:16px;color:var(--cream)}
 .foot{font-size:14px;color:var(--cream);opacity:.85;letter-spacing:.04em}
 
-/* music */
+/* chrome: progress, dust, music, hint */
+#bar{position:fixed;z-index:30;top:env(safe-area-inset-top,0px);left:0;right:0;height:3px;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--cream),var(--gold));pointer-events:none}
+#dust{position:fixed;inset:0;z-index:6;pointer-events:none}
 .fab{position:fixed;z-index:20;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));width:52px;height:52px;border-radius:50%;border:1.5px solid var(--navy);background:var(--cream);color:var(--navy);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.35)}
 .fab .off{display:none}
 .fab[aria-pressed="false"] .off{display:block}
-.fab[aria-pressed="true"] .wave{animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.35}}
-@media (prefers-reduced-motion:reduce){.fab .wave{animation:none!important}}
+.fab[aria-pressed="true"] svg{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+#hint{position:fixed;z-index:20;left:max(16px,env(safe-area-inset-left,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));max-width:calc(100vw - 108px);background:rgba(243,236,218,.94);color:var(--navy);border-radius:999px;padding:10px 18px;font-size:15px;font-weight:500;line-height:1.3;opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease),transform .6s var(--ease);pointer-events:none}
+#hint.show{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .sway,.fl-in,.arch,.arch>*,.cue,.fab[aria-pressed="true"] svg{animation:none!important}
+  .rv{transition:none}
+}
 img{max-width:100%}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
 
+
+<div id="bar" aria-hidden="true"></div>
+<canvas id="dust" aria-hidden="true"></canvas>
 
 <button class="fab" id="fab" type="button" aria-pressed="false" aria-label="Putar musik">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -111,19 +146,25 @@ img{max-width:100%}
   </svg>
 </button>
 
+<audio id="bgm" src="musik.mp3" loop preload="auto"></audio>
+
+<div id="hint" role="status" aria-live="polite">Sentuh layar untuk menjelajah sendiri</div>
+
+<div id="mmsg" role="status" hidden style="position:fixed;z-index:20;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(max(16px,env(safe-area-inset-bottom,0px)) + 64px);max-width:min(280px,calc(100vw - 32px));background:var(--ivory);color:var(--navy);border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.4"></div>
+
 <!-- 1. Cover -->
 <section class="sec cover" id="cover">
-  <img class="fl sway" style="--o:0% 100%;left:max(-30px,-4vw);top:max(20px,3vh);width:clamp(150px,40vw,250px)" data-i="flowerB" alt="" aria-hidden="true">
-  <img class="fl sway" style="--o:100% 0%;right:-70px;top:-50px;width:clamp(230px,60vw,420px);rotate:6deg" data-i="flowerA" alt="" aria-hidden="true">
-  <img class="fl sway" style="--o:0% 100%;left:-90px;bottom:-90px;width:clamp(220px,58vw,400px);transform:scaleX(-1) rotate(-14deg)" data-i="flowerA" alt="" aria-hidden="true">
+  <img class="fl fl-in" style="--o:0% 100%;--fx:-90px;--fy:-40px;left:max(-30px,-4vw);top:max(20px,3vh);width:clamp(150px,40vw,250px)" data-i="flowerB" alt="" aria-hidden="true">
+  <img class="fl fl-in" style="--o:100% 0%;--fx:110px;--fy:-90px;right:-70px;top:-50px;width:clamp(230px,60vw,420px);rotate:6deg" data-i="flowerA" alt="" aria-hidden="true">
+  <img class="fl fl-in" style="--o:0% 100%;--fx:-110px;--fy:110px;left:-90px;bottom:-90px;width:clamp(220px,58vw,400px);transform:scaleX(-1) rotate(-14deg)" data-i="flowerA" alt="" aria-hidden="true">
   <div class="arch">
-    <p class="eyebrow">Undangan Pernikahan</p>
-    <h1 class="script names">Siti Nadia Afwadi S.pd</h1>
-    <div class="amp">and</div>
-    <h1 class="script names">Martunis</h1>
-    <p class="lead" style="font-size:19px">Bersama keluarga besar, kami mengundang Anda untuk hadir di acara <strong style="font-weight:600">Preh Linto Baroe</strong></p>
-    <div class="guest"><small>Kepada Yth.</small><strong id="guest">Bapak/Ibu/Saudara/i</strong></div>
-    <button class="btn" id="open" type="button">
+    <p class="eyebrow" style="--i:0">Undangan Pernikahan</p>
+    <h1 class="script names" style="--i:1">Siti Nadia Afwadi S.pd</h1>
+    <div class="amp" style="--i:2">and</div>
+    <h1 class="script names" style="--i:3">Martunis</h1>
+    <p class="lead" style="--i:4;font-size:19px">Bersama keluarga besar, kami mengundang Anda untuk hadir di acara <strong style="font-weight:600">Preh Linto Baroe</strong></p>
+    <div class="guest" style="--i:5"><small>Kepada Yth.</small><strong id="guest">Bapak/Ibu/Saudara/i</strong></div>
+    <button class="btn cue" id="open" type="button">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
       Buka Undangan
     </button>
@@ -132,12 +173,34 @@ img{max-width:100%}
 
 <!-- 2. Sambutan -->
 <section class="sec alt" id="sambutan">
-  <img class="fl sway" style="--o:100% 0%;right:-60px;top:-40px;width:clamp(150px,38vw,240px);transform:scaleX(-1)" data-i="flowerB" alt="" aria-hidden="true">
+  <img class="fl" data-par="0.1" style="--o:100% 0%;right:-60px;top:-40px;width:clamp(150px,38vw,240px);transform:scaleX(-1)" data-i="flowerB" alt="" aria-hidden="true">
   <div class="in">
+    <p class="ar xl" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
     <p class="eyebrow">Selamat Datang</p>
     <h2 class="script h2">Assalamu'alaikum Warahmatullahi Wabarakatuh</h2>
     <p class="lead">Dengan memohon rahmat dan ridha Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara Preh Linto Baroe putra-putri kami.</p>
-    <div class="rule" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- 3. Ayat -->
+<section class="sec" id="ayat">
+  <img class="fl" data-par="-0.12" style="--o:0% 100%;left:-110px;bottom:-40px;width:clamp(190px,48vw,300px);transform:scaleX(-1) rotate(-16deg)" data-i="flowerA" alt="" aria-hidden="true">
+  <div class="in">
+    <p class="eyebrow">Firman Allah SWT</p>
+    <div class="verse">
+      <p class="ar xl" lang="ar" dir="rtl">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ</p>
+      <div class="rule" aria-hidden="true"></div>
+      <p class="trans">“Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir.”</p>
+      <p class="ref">QS. Ar-Rum: 21</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Mempelai -->
+<section class="sec alt" id="mempelai">
+  <img class="fl" data-par="0.1" style="--o:0% 100%;left:-50px;top:-30px;width:clamp(140px,34vw,210px);transform:scaleX(-1)" data-i="flowerB" alt="" aria-hidden="true">
+  <div class="in">
+    <p class="eyebrow">Kedua Mempelai</p>
     <div class="person">
       <h3 class="script">Siti Nadia Afwadi S.pd</h3>
       <p>Putri dari Bapak Afwadi &amp; Ibu Nurlela</p>
@@ -150,9 +213,9 @@ img{max-width:100%}
   </div>
 </section>
 
-<!-- 3. Acara -->
+<!-- 5. Acara -->
 <section class="sec" id="acara">
-  <img class="fl sway" style="--o:0% 50%;left:-110px;bottom:-30px;width:clamp(200px,50vw,320px);transform:scaleX(-1) rotate(-20deg)" data-i="flowerA" alt="" aria-hidden="true">
+  <img class="fl" data-par="-0.1" style="--o:0% 50%;left:-110px;bottom:-30px;width:clamp(200px,50vw,320px);transform:scaleX(-1) rotate(-20deg)" data-i="flowerA" alt="" aria-hidden="true">
   <div class="in">
     <p class="eyebrow">Hari Bahagia</p>
     <h2 class="script h2">Preh Linto Baroe</h2>
@@ -177,7 +240,7 @@ img{max-width:100%}
   </div>
 </section>
 
-<!-- 4. Denah -->
+<!-- 6. Denah -->
 <section class="sec alt" id="denah">
   <div class="in">
     <p class="eyebrow">Lokasi Acara</p>
@@ -192,9 +255,9 @@ img{max-width:100%}
   </div>
 </section>
 
-<!-- 5. Hadiah -->
+<!-- 7. Hadiah -->
 <section class="sec" id="hadiah">
-  <img class="fl sway" style="--o:0% 100%;left:-50px;top:-30px;width:clamp(140px,34vw,210px);transform:scaleX(-1)" data-i="flowerB" alt="" aria-hidden="true">
+  <img class="fl" data-par="0.1" style="--o:100% 0%;right:-60px;top:-30px;width:clamp(140px,34vw,210px)" data-i="flowerB" alt="" aria-hidden="true">
   <div class="in">
     <p class="eyebrow">Tanda Kasih</p>
     <h2 class="script h2">Hadiah Pernikahan</h2>
@@ -212,9 +275,30 @@ img{max-width:100%}
   </div>
 </section>
 
-<!-- 6. Penutup -->
-<section class="sec alt" id="penutup">
-  <img class="fl sway" style="--o:50% 100%;right:-80px;bottom:-70px;width:clamp(200px,52vw,330px);transform:rotate(-8deg)" data-i="flowerA" alt="" aria-hidden="true">
+<!-- 8. Doa -->
+<section class="sec alt" id="doa">
+  <img class="fl" data-par="-0.1" style="--o:0% 100%;left:-120px;top:20%;width:clamp(190px,46vw,290px);transform:scaleX(-1) rotate(-24deg);opacity:.9" data-i="flowerA" alt="" aria-hidden="true">
+  <div class="in">
+    <p class="eyebrow">Doa untuk Kedua Mempelai</p>
+    <div class="verse">
+      <p class="ar xl" lang="ar" dir="rtl">بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ</p>
+      <p class="latin">Bārakallāhu laka wa bāraka ‘alaika wa jama‘a bainakumā fī khair.</p>
+      <p class="trans">“Semoga Allah memberkahimu, melimpahkan keberkahan atasmu, dan mempersatukan kalian berdua dalam kebaikan.”</p>
+      <p class="ref">HR. Abu Dawud &amp; At-Tirmidzi</p>
+    </div>
+    <div class="rule" aria-hidden="true"></div>
+    <div class="verse">
+      <p class="ar xl" lang="ar" dir="rtl">رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا</p>
+      <p class="latin">Rabbanā hab lanā min azwājinā wa dzurriyyātinā qurrata a‘yunin waj‘alnā lil-muttaqīna imāmā.</p>
+      <p class="trans">“Ya Tuhan kami, anugerahkanlah kepada kami pasangan kami dan keturunan kami sebagai penyenang hati (kami), dan jadikanlah kami pemimpin bagi orang-orang yang bertakwa.”</p>
+      <p class="ref">QS. Al-Furqan: 74</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Penutup -->
+<section class="sec" id="penutup">
+  <img class="fl" data-par="-0.08" style="--o:50% 100%;right:-80px;bottom:-70px;width:clamp(200px,52vw,330px);transform:rotate(-8deg)" data-i="flowerA" alt="" aria-hidden="true">
   <div class="in">
     <p class="eyebrow">Terima Kasih</p>
     <h2 class="script h2">Atas Doa &amp; Kehadiran Anda</h2>
@@ -234,6 +318,8 @@ img{max-width:100%}
 (function () {
   'use strict';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+  function scrollY_() { return window.pageYOffset || root.scrollTop || 0; }
 
   /* ---- nama tamu dari link: ...#to-nama-tamu ---- */
   try {
@@ -281,90 +367,160 @@ img{max-width:100%}
     } catch (e) { fallback(); }
   });
 
-  /* ---- musik romantis (dibuat langsung di browser, tanpa file) ---- */
-  var ctx = null, master = null, timerM = null, nextT = 0, step = 0, playing = false;
-  var BPM = 58, EIGHTH = 60 / BPM / 2;
-  var bars = [
-    { b: 36, t: [60, 64, 67], mel: [79, 76] },  // C
-    { b: 43, t: [59, 62, 67], mel: [74, 79] },  // G
-    { b: 45, t: [60, 64, 69], mel: [76, 72] },  // Am
-    { b: 40, t: [59, 64, 67], mel: [71, 76] },  // Em
-    { b: 41, t: [60, 65, 69], mel: [77, 81] },  // F
-    { b: 36, t: [60, 64, 67], mel: [79, 76] },  // C
-    { b: 41, t: [60, 65, 69], mel: [77, 72] },  // F
-    { b: 43, t: [59, 62, 67], mel: [74, 71] }   // G
-  ];
-  var pattern = [0, 1, 2, 3, 2, 1, 2, 1];
-  function hz(n) { return 440 * Math.pow(2, (n - 69) / 12); }
-  function reverb() {
-    var len = ctx.sampleRate * 2.8, buf = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (var c = 0; c < 2; c++) {
-      var d = buf.getChannelData(c);
-      for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
-    }
-    var cv = ctx.createConvolver(); cv.buffer = buf; return cv;
-  }
-  function voice(freq, t, dur, vol, type, attack) {
-    var o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = type; o.frequency.value = freq;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.linearRampToValueAtTime(vol, t + attack);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g); g.connect(master);
-    o.start(t); o.stop(t + dur + 0.05);
-  }
-  function pluck(n, t, vol) { voice(hz(n), t, 1.9, vol, 'triangle', 0.012); voice(hz(n) * 2, t, 0.9, vol * 0.18, 'sine', 0.01); }
-  function schedule() {
-    while (nextT < ctx.currentTime + 1.2) {
-      var bar = bars[Math.floor(step / 8) % bars.length], pos = step % 8, notes = bar.t.concat([bar.t[0] + 12]);
-      if (pos === 0) {
-        voice(hz(bar.b), nextT, 4.2, 0.2, 'sine', 0.05);
-        bar.t.forEach(function (n) { voice(hz(n - 12), nextT, 4.4, 0.035, 'sine', 0.9); });
-      }
-      if (pos === 0 || pos === 4) voice(hz(bar.mel[pos / 4]), nextT, 2.6, 0.075, 'sine', 0.03), voice(hz(bar.mel[pos / 4]) * 2, nextT, 1.2, 0.012, 'sine', 0.03);
-      pluck(notes[pattern[pos]], nextT, 0.085);
-      nextT += EIGHTH; step++;
-    }
-  }
-  var fab = document.getElementById('fab');
+  /* ---- musik latar ---- */
+  var bgm = document.getElementById('bgm'), fab = document.getElementById('fab'), playing = false;
+  var mmsg = document.getElementById('mmsg');
+  function warn(t) { mmsg.textContent = t; mmsg.hidden = false; clearTimeout(warn.t); warn.t = setTimeout(function () { mmsg.hidden = true; }, 9000); }
   function setUi() { fab.setAttribute('aria-pressed', playing ? 'true' : 'false'); fab.setAttribute('aria-label', playing ? 'Matikan musik' : 'Putar musik'); }
-  function start() {
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
+  function startMusic() {
     try {
-      if (!ctx) {
-        ctx = new AC();
-        master = ctx.createGain(); master.gain.value = 0;
-        var wet = ctx.createGain(); wet.gain.value = 0.55;
-        var rv = reverb();
-        master.connect(ctx.destination); master.connect(rv); rv.connect(wet); wet.connect(ctx.destination);
-      }
-      ctx.resume();
-      nextT = ctx.currentTime + 0.15;
-      master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
-      master.gain.linearRampToValueAtTime(0.9, ctx.currentTime + 2.5);
-      clearInterval(timerM); timerM = setInterval(schedule, 200); schedule();
-      playing = true;
-    } catch (e) { playing = false; }
-    setUi();
+      bgm.volume = 0.8;
+      var p = bgm.play();
+      playing = true; setUi();
+      if (p && p.catch) p.catch(function (e) {
+        playing = false; setUi();
+        warn('Musik tidak bisa diputar (' + (e && e.name ? e.name : 'error') + '). Matikan mode silent, naikkan volume, lalu tekan ikon musik.');
+      });
+    } catch (e) { playing = false; setUi(); warn('Musik tidak bisa diputar di perangkat ini.'); }
   }
-  function stop() {
-    if (!ctx) return;
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
-    master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
-    clearInterval(timerM);
-    setTimeout(function () { if (!playing && ctx) ctx.suspend(); }, 1000);
-    playing = false; setUi();
-  }
-  fab.addEventListener('click', function () { playing ? stop() : start(); });
+  function stopMusic() { try { bgm.pause(); } catch (e) {} playing = false; setUi(); }
+  bgm.addEventListener('error', function () { playing = false; setUi(); warn('File musik gagal dimuat (kode ' + (bgm.error ? bgm.error.code : 0) + ').'); });
+  fab.addEventListener('click', function () { playing ? stopMusic() : startMusic(); });
 
-  /* ---- buka undangan ---- */
+  /* ---- animasi muncul saat digulir ---- */
+  var secs = document.querySelectorAll('.sec:not(.cover) .in');
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target; io.unobserve(el);
+        el.classList.remove('rv-pre');
+        setTimeout(function () { el.classList.remove('rv'); el.style.removeProperty('--d'); }, 2200);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    Array.prototype.forEach.call(secs, function (inner) {
+      Array.prototype.forEach.call(inner.children, function (el, i) {
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.92 && r.bottom > 0) return;
+        el.classList.add('rv', 'rv-pre');
+        el.style.setProperty('--d', Math.min(i * 0.1, 0.5).toFixed(2) + 's');
+        io.observe(el);
+      });
+    });
+  }
+
+  /* ---- progress bar + parallax bunga ---- */
+  var bar = document.getElementById('bar');
+  var pars = Array.prototype.slice.call(document.querySelectorAll('[data-par]'));
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var max = root.scrollHeight - window.innerHeight;
+    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(scrollY_() / max, 1) : 0).toFixed(4) + ')';
+    if (reduce) return;
+    var vh = window.innerHeight;
+    pars.forEach(function (p) {
+      var r = p.parentElement.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      var d = (r.top + r.height / 2) - vh / 2;
+      p.style.translate = '0 ' + (d * parseFloat(p.getAttribute('data-par'))).toFixed(1) + 'px';
+    });
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+
+  /* ---- debu emas halus ---- */
+  (function () {
+    if (reduce) return;
+    var cv = document.getElementById('dust'), c = cv.getContext && cv.getContext('2d');
+    if (!c) return;
+    var W = 0, H = 0, P = [], N = 26;
+    function size() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth; H = window.innerHeight;
+      cv.width = W * dpr; cv.height = H * dpr;
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function mk() { return { x: Math.random() * W, y: Math.random() * H, r: 0.6 + Math.random() * 1.7, vy: -(0.12 + Math.random() * 0.28), vx: (Math.random() - 0.5) * 0.15, a: 0.18 + Math.random() * 0.4, ph: Math.random() * 6.28 }; }
+    size();
+    for (var i = 0; i < N; i++) P.push(mk());
+    window.addEventListener('resize', size);
+    function loop(t) {
+      if (!document.hidden) {
+        c.clearRect(0, 0, W, H);
+        for (var i = 0; i < P.length; i++) {
+          var p = P[i];
+          p.y += p.vy; p.x += p.vx + Math.sin(t / 2000 + p.ph) * 0.12;
+          if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
+          var tw = 0.6 + 0.4 * Math.sin(t / 900 + p.ph);
+          c.fillStyle = 'rgba(242,194,48,' + (p.a * tw).toFixed(3) + ')';
+          c.beginPath(); c.arc(p.x, p.y, p.r, 0, 6.283); c.fill();
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  })();
+
+  /* ---- tur otomatis setelah "Buka Undangan" ---- */
+  var order = ['sambutan', 'ayat', 'mempelai', 'acara', 'denah', 'hadiah', 'doa', 'penutup'];
+  var dwell = { sambutan: 5200, ayat: 9000, mempelai: 6000, acara: 5000, denah: 6000, hadiah: 6000, doa: 8000, penutup: 5000 };
+  var hint = document.getElementById('hint');
+  var token = 0;
+  function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function glide(to, ms, tk, easing) {
+    return new Promise(function (res) {
+      var from = scrollY_(), t0 = performance.now();
+      function f(now) {
+        if (tk !== token) { res(false); return; }
+        var p = Math.min((now - t0) / ms, 1);
+        window.scrollTo(0, from + (to - from) * (easing ? ease(p) : p));
+        if (p < 1) requestAnimationFrame(f); else res(true);
+      }
+      requestAnimationFrame(f);
+    });
+  }
+  function wait(ms, tk) { return new Promise(function (res) { setTimeout(function () { res(tk === token); }, ms); }); }
+  function cancelTour(e) {
+    if (e && e.target && e.target.closest && e.target.closest('#fab')) return;
+    token++;
+    endTour();
+  }
+  var EV = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+  function endTour() {
+    hint.classList.remove('show');
+    EV.forEach(function (n) { window.removeEventListener(n, cancelTour); });
+  }
+  async function runTour() {
+    var tk = ++token;
+    hint.classList.add('show');
+    EV.forEach(function (n) { window.addEventListener(n, cancelTour, { passive: true }); });
+    for (var i = 0; i < order.length; i++) {
+      var el = document.getElementById(order[i]);
+      if (!el) continue;
+      var vh = window.innerHeight, h = el.offsetHeight, top = el.getBoundingClientRect().top + scrollY_();
+      var y = h < vh * 0.9 ? top - (vh - h) / 2 : top;
+      if (!(await glide(y, 1800, tk, true))) return;
+      var extra = h - vh;
+      if (extra > 40) {
+        if (!(await wait(1500, tk))) return;
+        if (!(await glide(y + extra, Math.max(5000, extra * 13), tk, false))) return;
+        if (!(await wait(1500, tk))) return;
+      } else if (!(await wait(dwell[order[i]] || 5000, tk))) return;
+    }
+    if (tk === token) endTour();
+  }
+
   document.getElementById('open').addEventListener('click', function () {
-    if (!playing) start();
-    var t = document.getElementById('sambutan');
-    if (t && t.scrollIntoView) t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    if (!playing) startMusic();
+    if (reduce) {
+      var t = document.getElementById('sambutan');
+      if (t && t.scrollIntoView) t.scrollIntoView({ behavior: 'auto', block: 'start' });
+      return;
+    }
+    runTour();
   });
 })();
 </script>
